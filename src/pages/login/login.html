@@ -1,0 +1,35 @@
+<ion-content >
+  <ion-list>
+
+    <ion-item>
+      <ion-label floating>E-mail</ion-label>
+      <ion-input type="text" [(ngModel)]="user.email"></ion-input>
+    </ion-item>
+  
+    <ion-item >
+      <ion-label floating>Password</ion-label>
+      <ion-input type="password" [(ngModel)]="user.password"></ion-input>
+    </ion-item>
+    <button ion-button color="dark" slot="secondary" outline small >Mot de passe oublié ?</button>
+  </ion-list>
+  <button ion-button (tap)="login(user)" color="light" round full>Connexion</button>
+<br>
+<button ion-button (tap)="register()" color="dark"  round full>Inscription</button>
+<ion-item lines="none">
+  <ion-label color="dark" text-center>Ou connectez-vous avec</ion-label>
+</ion-item>
+  <ion-row>
+    <ion-col>
+      <button ion-button (tap)="loginFacebook()" icon-left block>
+    <ion-icon name="logo-facebook"></ion-icon>
+    <div>facebook</div>
+  </button>
+    </ion-col>
+    <ion-col>
+      <button ion-button icon-left color="danger" block>
+    <ion-icon name="logo-google"></ion-icon>
+    <div>Google</div>
+  </button>
+    </ion-col>
+  </ion-row>
+</ion-content>
