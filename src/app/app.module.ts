@@ -9,7 +9,7 @@ import { AngularFireDatabaseModule } from "angularfire2/database";
 import { AngularFireStorageModule } from "angularfire2/storage";
 import { MyApp } from './app.component';
 import { FIREBASE_CONFIG } from './app.firebase.config';
-import { Facebook } from '@ionic-native/facebook/ngx'
+import { Facebook } from '@ionic-native/facebook';
 
 @NgModule({
   declarations: [
