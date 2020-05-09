@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import { User } from '../../app/models/user';
 import { AngularFireAuth } from 'angularfire2/auth';
-//import firebase from 'firebase' ;
-import {FacebookLoginResponse, Facebook } from '@ionic-native/facebook';
+import firebase from 'firebase' ;
+import { AngularFireDatabase } from 'angularfire2/database';
+import { Facebook } from '@ionic-native/facebook';
+//import {FacebookLoginResponse, Facebook } from '@ionic-native/facebook';
 
 /**
  * Generated class for the LoginPage page.
@@ -20,7 +22,12 @@ import {FacebookLoginResponse, Facebook } from '@ionic-native/facebook';
 export class LoginPage {
   user = {} as User;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,private afAuth: AngularFireAuth,private fb: Facebook) {
+  constructor(public navCtrl: NavController,
+     public navParams: NavParams,
+     private afAuth: AngularFireAuth,
+     public afDB: AngularFireDatabase,
+     private fb: Facebook,
+     public platform: Platform     /*private fb: Facebook*/) {
   }
 
   ionViewDidLoad() {
@@ -41,9 +48,63 @@ register (){
 
   this.navCtrl.push('RegisterPage')
 }
+facebookCordova() {
+  this.fb.login(['email']).then( (response) => {
+      const facebookCredential = firebase.auth.FacebookAuthProvider
+          .credential(response.authResponse.accessToken);
+      firebase.auth().signInWithCredential(facebookCredential)
+      .then((success) => {
+        console.log('Info Facebook: ' + JSON.stringify(success));
+             this.navCtrl.push('HomePage');
+            this.afDB.object('Users/' + success.user.uid).set({
+              displayName: success.user.displayName,
+              photoURL: success.user.photoURL});
+      }).catch((error) => {
+          console.log('Erreur: ' + JSON.stringify(error));
+      });
+  }).catch((error) => { console.log(error); });
+}
+facebookWeb() {
+  this.afAuth.auth
+    .signInWithPopup(new firebase.auth.FacebookAuthProvider())
+    .then((success) => {
+      console.log('Info Facebook: ' + JSON.stringify(success));
+      this.navCtrl.push('HomePage');
+      this.afDB.object('Users/' + success.user.uid).set({
+        displayName: success.user.displayName,
+        photoURL: success.user.photoURL
+      });
+    }).catch((error) => {
+      console.log('Erreur: ' + JSON.stringify(error));
+    });
+}
+
+facebookLogin() {
+  if (this.platform.is('cordova')) {
+    console.log('PLateforme cordova');
+    this.facebookCordova();
+  } else {
+    console.log('PLateforme Web');
+    this.facebookWeb();
+  }
+}
+
+loginGoogle() {
+  const result = this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(res => {
+    console.log(res);
+    if (result){
+      this.navCtrl.setRoot('HomePage');
+    }
+  })
+}
+/* loginFacebook() {
+  this.afAuth.auth.signInWithPopup(new firebase.auth.FacebookAuthProvider()).then(res => {
+    console.log(res);
+  })
+}
 loginFacebook(){
   this.fb.login(['public_profile','email'])
   .then((res: FacebookLoginResponse) => console.log('Logged into Facebook!', res))
   .catch(e => console.log('Error logging into Facebook', e));
-}
+}*/
 }
