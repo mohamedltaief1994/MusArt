@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AngularFireStorage } from '@angular/fire/storage';
-import {GalleriePage} from '../gallerie/gallerie' ;
+import { HomePage } from '../home/home';
 
 /**
- * Generated class for the HomePage page.
+ * Generated class for the GalleriePage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
@@ -13,11 +13,12 @@ import {GalleriePage} from '../gallerie/gallerie' ;
 
 @IonicPage()
 @Component({
-  selector: 'page-home',
-  templateUrl: 'home.html',
+  selector: 'page-gallerie',
+  templateUrl: 'gallerie.html',
 })
-export class HomePage {
-  museums = [] ;
+export class GalleriePage {
+
+  galleries = [] ;
   public text:string;
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public afDB: AngularFireDatabase,
@@ -30,24 +31,24 @@ export class HomePage {
   }
   getImagesDatabase() {
       // pour récupérer les informations des images
-    this.afDB.list('museums/').snapshotChanges(['child_added']).subscribe(museums => {
-      museums.forEach(museum => {
-      // console.log('Image: ' + museum.payload.exportVal().img);
-        this.getImagesStorage(museum) ;
+    this.afDB.list('galleries/').snapshotChanges(['child_added']).subscribe(galleries => {
+      galleries.forEach(gallerie => {
+       console.log('Image: ' + gallerie.payload.exportVal().img);
+        this.getImagesStorage(gallerie) ;
       });
     });
   }
   
-  getImagesStorage(museum: any) {
+  getImagesStorage(gallerie: any) {
     // pour récupérer l'URL des images
-    const imgRef = museum.payload.exportVal().img;
+    const imgRef = gallerie.payload.exportVal().img;
     this.afSG.ref(imgRef).getDownloadURL().subscribe(imgUrl => {
-      //console.log(imgUrl);
-      this.museums.push({
-        name: museum.payload.exportVal().name,
-        arabe: museum.payload.exportVal().arabe, 
-        tel: museum.payload.exportVal().tel, 
-        description: museum.payload.exportVal().description, 
+      console.log(imgUrl);
+      this.galleries.push({
+        name: gallerie.payload.exportVal().name,
+        arabe: gallerie.payload.exportVal().arabe, 
+        tel: gallerie.payload.exportVal().tel, 
+        description: gallerie.payload.exportVal().description, 
         url: imgUrl
       });
     });
@@ -62,9 +63,9 @@ export class HomePage {
     if (!searchTerm){
       return ;
     }
-    this.museums = this.museums.filter(currentMuseum =>{
-      if (currentMuseum.name && searchTerm){
-        return(currentMuseum.name.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 )
+    this.galleries = this.galleries.filter(currentGallerie =>{
+      if (currentGallerie.name && searchTerm){
+        return(currentGallerie.name.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 )
       }
     })
   }

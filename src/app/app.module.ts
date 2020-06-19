@@ -10,11 +10,14 @@ import { AngularFireStorageModule } from "angularfire2/storage";
 import { MyApp } from './app.component';
 import { FIREBASE_CONFIG } from './app.firebase.config';
 import { Facebook } from '@ionic-native/facebook';
+import { GalleriePage } from '../pages/gallerie/gallerie';
+
 
 @NgModule({
   declarations: [
     MyApp,
- 
+    GalleriePage,
+    
   ],
   imports: [
     BrowserModule,
@@ -27,7 +30,7 @@ import { Facebook } from '@ionic-native/facebook';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-   
+    GalleriePage,
   ],
   providers: [
     StatusBar,
